@@ -1,0 +1,12 @@
+{ "branchName": "CUST-1853",
+  "transitions": 
+    [ { "description": "Example #1",
+        "source": "example1.txt",
+        "target": "example2.txt"
+      },
+      { "description": "Example #2",
+        "source": "example3.txt",
+        "target": "example4.txt"
+      }
+    ]
+}
