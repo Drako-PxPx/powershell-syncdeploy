@@ -1,0 +1,1 @@
+  TYPE t_strings IS TABLE OF varchar2(200);

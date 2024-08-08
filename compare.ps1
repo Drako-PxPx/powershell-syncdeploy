@@ -64,9 +64,17 @@ foreach ($i in $myJson.transitions) {
           $fieldlist = "$($fieldlist)$($j.name);"
           $typeslist = "$($typeslist)$($j.type);"
         }
-        m4 -D __TABLE_NAME__="$($i.table_name)" -D __TABLE_OWNER__="$($i.table_owner)" -D __FIELDS_LIST__="$($fieldlist)" -D __DATA_TYPES__="$($typeslist)" (Join-Path $PSScriptRoot "/templates/appendfields.m4") > $d2path
+        m4 -D __TABLE_NAME__="$($i.table_name)" -D __TABLE_OWNER__="$($i.table_owner)" -D __FIELDS_LIST__="$($fieldlist)" -D __DATA_TYPES__="$($typeslist)" -I (Join-Path $PSScriptRoot "/templates/lib") (Join-Path $PSScriptRoot "/templates/appendfields.m4") > $d2path
       }
-
+      rollout-indexes {
+        $indexlist = ""
+        $columnlist = ""
+        foreach ($j in $i.indexes) {
+          $indexlist  = "$($indexlist)$($j.name);"
+          $columnlist = "$($columnlist)$($j.column);"
+        }
+        m4 -D __TABLE_NAME__="$($i.table_name)" -D __TABLE_OWNER__="$($i.table_owner)" -D __IX_TBS__="$($i.tablespace)" -D __INDEX_LIST__="$($indexlist)" -D __INDEX_COLUMNS__="$($columnlist)" -I (Join-Path $PSScriptRoot "/templates/lib") (Join-Path $PSScriptRoot "/templates/indextable.m4") > $d2path
+      }
     }
   }
 }
