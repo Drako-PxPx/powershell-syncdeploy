@@ -2,24 +2,33 @@ param (
   [Parameter(Mandatory=$false)][string]$project
 )
 
-$git_path = Join-Path $PSScriptRoot "../git"
+# TODO: Write a validation when target value is missing
+# TODO: Add a validation when the target does not hold a # character
+
+# $git_path = Join-Path $PSScriptRoot "../git"
+Write-Host $PSScriptRoot
 if (-not $project) {
   $project = git -C $git_path branch --show-current
 }
 
 $project_path = Join-Path $PSScriptRoot "projects\$($project).json"
 
+
 $myJson = Get-Content $project_path -Raw | ConvertFrom-Json
 Write-Host $myJson.branchName
+$git_path = $myJson.project_path
+$deployment_path = $myJson.deployment_path
+$trnbr = 0
 
 foreach ($i in $myJson.transitions) {
-  # Write-Host $i.description
+  $trnbr = $trnbr + 1
   if ($i.source) {
     $d1path = Join-Path $git_path $i.source
   } else {
     $d1path = $null
   }
-  $d2path = Join-Path $git_path $i.target
+  $d2path = Join-Path $git_path $deployment_path
+  $d2path = Join-Path $d2path $i.target.Replace("#",$trnbr.ToString('00'))
   
   try {
     $d1 = [datetime](Get-ItemProperty -Path $d1path -Name LastWriteTime -ErrorAction Stop).LastWriteTime
@@ -37,8 +46,6 @@ foreach ($i in $myJson.transitions) {
     # No destination file 
     $d2 = [datetime](Get-Date -Date "01-01-1970" )
   }
-
-
 
   if ($d1 -gt $d2) {
     Write-Host $i.description
