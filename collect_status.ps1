@@ -20,7 +20,6 @@ $env:SQLPATH = "sql"
 
 $stamp = $(Get-Date).ToString("yyyyMMddHHmm");
 
-
 $output_file = "_output/$($stamp)_$($tnsstring).json"
 sqlcmd -script object_statuses |  ConvertFrom-Json -ErrorAction stop | ConvertTo-Json | Out-File -FilePath $output_file
 

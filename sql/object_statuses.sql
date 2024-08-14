@@ -1,6 +1,7 @@
 set ver off pages 999 heading off feedback off
 prompt [
 select json_object
+
   ( key 'status'  value status,
     key 'object-type' value object_type,
     key 'object-name' value object_name,
